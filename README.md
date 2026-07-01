@@ -1,42 +1,76 @@
-# Code Style — 跨工具代码规范安装器
+# dev-standards
 
-一键安装代码风格规则到所有 AI 编程工具。
+Claude Code 插件 — 一套前端开发规范，自动应用到所有 AI 编程工具。
 
-## 使用
+## 安装
+
+### 本地开发测试
 
 ```bash
-# 全局安装（Claude Code）
-node bin/code-style.js --global
-
-# 项目安装（Cursor / Copilot / Windsurf）
-node bin/code-style.js --project
-
-# 一键安装全部
-node bin/code-style.js
+claude --plugin-dir ./dev-standards
 ```
 
-发布到 npm 后可直接 `npx code-style`。
+### 安装到本地
 
-## 安装位置
+```bash
+claude plugin init dev-standards
+```
 
-| 工具 | 安装路径 |
-|------|----------|
-| Claude Code | `~/.claude/CLAUDE.md` |
-| Cursor | `.cursorrules` |
-| Copilot | `.github/copilot-instructions.md` |
-| Windsurf | `.windsurfrules` |
+### 从 marketplace 安装
 
-## 规则文件
+```bash
+/plugin install dev-standards
+```
 
-| 文件 | 内容 |
-|------|------|
-| `rules/engineering.md` | 工程决策约束、调研规则、输出格式 |
-| `rules/code-style.md` | 间距系统、色彩规范、字体层级、深色主题 |
-| `rules/commit-style.md` | Git 提交规范（Conventional Commits） |
-| `rules/review.md` | Code Review 维度、UI 审查标准 |
-| `rules/figma.md` | Figma 还原规则 |
-| `rules/i18n.md` | 国际化规范 |
+## 结构
 
-## 修改规则
+```
+dev-standards/
+├── .claude-plugin/
+│   └── plugin.json          # 插件清单
+├── agents/
+│   └── standards-agent.md   # 主 agent（始终生效的规范）
+├── skills/
+│   ├── ui-review/           # UI 审查
+│   ├── component-spec/      # 组件规格
+│   ├── dark-theme/          # 深色主题
+│   ├── design-polish/       # 视觉打磨
+│   └── spacing-audit/       # 间距审计
+├── standards/               # 规范源文件
+│   ├── code-style.md
+│   ├── commit-style.md
+│   ├── engineering.md
+│   ├── figma.md
+│   ├── i18n.md
+│   └── review.md
+└── settings.json            # 激活主 agent
+```
 
-直接编辑 `rules/` 下的文件，然后重新执行安装命令。
+## 内容
+
+### Skills（按需调用）
+
+| Skill | 调用方式 | 用途 |
+|-------|---------|------|
+| ui-review | `/dev-standards:ui-review` | 商业软件级视觉审查 |
+| component-spec | `/dev-standards:component-spec` | 组件规格文档生成 |
+| dark-theme | `/dev-standards:dark-theme` | 深色主题优化 |
+| design-polish | `/dev-standards:design-polish` | 视觉打磨 |
+| spacing-audit | `/dev-standards:spacing-audit` | 间距一致性审查 |
+
+### Standards（始终生效）
+
+通过 `standards-agent` 自动加载：
+
+- 工程决策约束
+- 代码风格规范
+- Git 提交规范
+- 国际化规范
+- Figma 还原规则
+- Code Review 偏好
+
+## 工作流
+
+1. 编辑 `standards/` 或 `skills/` 中的文件
+2. 运行 `/reload-plugins` 重新加载
+3. 变更立即生效
