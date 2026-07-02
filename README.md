@@ -13,40 +13,40 @@
 | `figma.md` | Figma 还原规则：MCP 工具调用、验证流程 |
 | `review.md` | Code Review 偏好：审查维度、优先级 |
 
-## 使用方法
+## 安装
 
-### 1. 克隆仓库
+### 克隆并运行安装脚本
 
 ```bash
 git clone https://github.com/YancaiShi/dev-standards.git ~/dev-standards
+cd ~/dev-standards
 ```
 
-### 2. 链接到 Claude Code 配置目录
+**macOS / Linux:**
+```bash
+chmod +x install.sh
+./install.sh
+```
+
+**Windows (PowerShell):**
+```powershell
+.\install.ps1
+```
+
+脚本会自动：
+1. 创建符号链接 `~/.claude/standards` -> 仓库的 `standards/`
+2. 提示你在 `~/.claude/CLAUDE.md` 中添加引用（如未配置）
+
+### 手动安装
+
+如果不使用脚本：
 
 ```bash
-# macOS / Linux
+# 1. 链接 standards
 ln -s ~/dev-standards/standards ~/.claude/standards
 
-# Windows (管理员 PowerShell)
-New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.claude\standards" -Target "$env:USERPROFILE\dev-standards\standards"
-```
-
-### 3. 在全局 CLAUDE.md 中引用
-
-在 `~/.claude/CLAUDE.md` 中添加：
-
-```markdown
-# 个人前端开发规范
-
-> 详细规范文档位于 `~/.claude/standards/`，需要时读取。
-
-## 工程决策约束
-（从 engineering.md 复制要点，或写"详见 engineering.md"）
-
-## 代码风格
-（从 code-style.md 复制要点，或写"详见 code-style.md"）
-
-...其他规范同理
+# 2. 在 ~/./.claude/CLAUDE.md 中添加引用
+# 详见 install.sh 输出的模板
 ```
 
 ## 更新规范
@@ -54,5 +54,5 @@ New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.claude\standards" -Targ
 ```bash
 cd ~/dev-standards
 git pull
-# 链接会自动同步，无需额外操作
+# 符号链接自动同步，重启 Claude Code 生效
 ```
