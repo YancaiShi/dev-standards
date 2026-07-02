@@ -1,4 +1,4 @@
-$ErrorActionPreference = "Stop"
+﻿$ErrorActionPreference = "Stop"
 
 $standardsDir = "$env:USERPROFILE\.claude\standards"
 $claudeMd = "$env:USERPROFILE\.claude\CLAUDE.md"

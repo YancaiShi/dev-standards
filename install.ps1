@@ -1,4 +1,4 @@
-$ErrorActionPreference = "Stop"
+﻿$ErrorActionPreference = "Stop"
 
 $repoUrl = "https://github.com/YancaiShi/dev-standards.git"
 $installDir = "$env:USERPROFILE\dev-standards"

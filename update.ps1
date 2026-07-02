@@ -1,4 +1,4 @@
-$ErrorActionPreference = "Stop"
+﻿$ErrorActionPreference = "Stop"
 
 $installDir = "$env:USERPROFILE\dev-standards"
 $standardsDir = "$env:USERPROFILE\.claude\standards"
