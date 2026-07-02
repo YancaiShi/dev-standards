@@ -134,10 +134,20 @@ irm https://raw.githubusercontent.com/YancaiShi/dev-standards/main/uninstall.ps1
 | `figma.md` | Figma 还原规则 |
 | `review.md` | Code Review 偏好 |
 
-## 更新
+## 一键更新
 
+远程有更新时，执行以下命令即可同步到本机（无需卸载重装）：
+
+**macOS / Linux:**
 ```bash
-cd ~/dev-standards && git pull
+bash <(curl -sSL https://raw.githubusercontent.com/YancaiShi/dev-standards/main/update.sh)
 ```
 
-链接自动同步，重启 Claude Code 生效。
+**Windows PowerShell:**
+```powershell
+irm https://raw.githubusercontent.com/YancaiShi/dev-standards/main/update.ps1 | iex
+```
+
+更新脚本会拉取远程最新并经链接同步到 `~/.claude/standards`。规范以远程为唯一源，本地仓库的改动会被覆盖——自定义请提 PR 或 fork。
+
+重启 Claude Code 后生效。
