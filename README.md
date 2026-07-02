@@ -2,20 +2,22 @@
 
 前端开发规范，用于 Claude Code 每次会话自动加载。
 
-## 快速安装
+## 一键安装
 
+**macOS / Linux:**
 ```bash
-git clone https://github.com/YancaiShi/dev-standards.git ~/dev-standards && cd ~/dev-standards && ./install.sh
+bash <(curl -sSL https://raw.githubusercontent.com/YancaiShi/dev-standards/main/install.sh)
 ```
 
 **Windows PowerShell:**
 ```powershell
-git clone https://github.com/YancaiShi/dev-standards.git ~/dev-standards; cd ~/dev-standards; .\install.ps1
+irm https://raw.githubusercontent.com/YancaiShi/dev-standards/main/install.ps1 | iex
 ```
 
 安装脚本会自动：
-1. 创建符号链接 `~/.claude/standards` → 仓库的 `standards/`
-2. 配置 `~/.claude/CLAUDE.md` 引用规范
+1. 克隆仓库到 `~/dev-standards`
+2. 创建符号链接 `~/.claude/standards`
+3. 配置 `~/.claude/CLAUDE.md`
 
 完成后重启 Claude Code 即可生效。
 

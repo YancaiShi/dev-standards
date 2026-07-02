@@ -1,37 +1,45 @@
 $ErrorActionPreference = "Stop"
 
+$repoUrl = "https://github.com/YancaiShi/dev-standards.git"
+$installDir = "$env:USERPROFILE\dev-standards"
 $standardsDir = "$env:USERPROFILE\.claude\standards"
 $claudeMd = "$env:USERPROFILE\.claude\CLAUDE.md"
-$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 
 Write-Host "📦 安装 dev-standards..." -ForegroundColor Cyan
 
-# 1. 确保 ~/.claude 目录存在
-$claudeDir = "$env:USERPROFILE\.claude"
-if (-not (Test-Path $claudeDir)) {
-    New-Item -ItemType Directory -Path $claudeDir | Out-Null
-    Write-Host "✔ 创建目录: $claudeDir" -ForegroundColor Green
+# 1. 克隆或更新仓库
+if (Test-Path "$installDir\.git") {
+    Write-Host "✔ 仓库已存在，拉取最新..." -ForegroundColor Green
+    Set-Location $installDir
+    git pull -q
+} else {
+    git clone -q $repoUrl $installDir
+    Write-Host "✔ 已克隆仓库到 $installDir" -ForegroundColor Green
 }
 
-# 2. 链接 standards 目录
+# 2. 创建符号链接
+if (-not (Test-Path "$env:USERPROFILE\.claude")) {
+    New-Item -ItemType Directory -Path "$env:USERPROFILE\.claude" | Out-Null
+}
+
 if (Test-Path $standardsDir) {
     $item = Get-Item $standardsDir -Force
     if ($item.Attributes -band [IO.FileAttributes]::ReparsePoint) {
-        Write-Host "✔ standards 链接已存在，跳过" -ForegroundColor Green
+        Write-Host "✔ 符号链接已存在，跳过" -ForegroundColor Green
     } else {
-        Write-Host "⚠️  $standardsDir 已存在（非链接），备份为 .bak" -ForegroundColor Yellow
         Rename-Item $standardsDir "$standardsDir.bak"
-        New-Item -ItemType SymbolicLink -Path $standardsDir -Target "$scriptDir\standards" | Out-Null
+        New-Item -ItemType SymbolicLink -Path $standardsDir -Target "$installDir\standards" | Out-Null
         Write-Host "✔ 已创建符号链接（原目录已备份）" -ForegroundColor Green
     }
 } else {
-    New-Item -ItemType SymbolicLink -Path $standardsDir -Target "$scriptDir\standards" | Out-Null
-    Write-Host "✔ 已创建符号链接: $standardsDir" -ForegroundColor Green
+    New-Item -ItemType SymbolicLink -Path $standardsDir -Target "$installDir\standards" | Out-Null
+    Write-Host "✔ 已创建符号链接" -ForegroundColor Green
 }
 
-# 3. 自动配置 CLAUDE.md
+# 3. 配置 CLAUDE.md
 $marker = "# 个人前端开发规范"
 $reference = @"
+
 $marker
 
 > 详细规范文档位于 ``~/.claude/standards/``，需要时读取。
@@ -55,16 +63,11 @@ $marker
 详见 ``~/.claude/standards/review.md``
 "@
 
-if (Test-Path $claudeMd) {
-    if (Select-String -Path $claudeMd -Pattern $marker -Quiet) {
-        Write-Host "✔ CLAUDE.md 已配置，跳过" -ForegroundColor Green
-    } else {
-        Add-Content -Path $claudeMd -Value "`n$reference"
-        Write-Host "✔ 已追加规范引用到 CLAUDE.md" -ForegroundColor Green
-    }
+if ((Test-Path $claudeMd) -and (Select-String -Path $claudeMd -Pattern $marker -Quiet)) {
+    Write-Host "✔ CLAUDE.md 已配置，跳过" -ForegroundColor Green
 } else {
-    Set-Content -Path $claudeMd -Value $reference
-    Write-Host "✔ 已创建 CLAUDE.md 并写入规范引用" -ForegroundColor Green
+    Add-Content -Path $claudeMd -Value $reference
+    Write-Host "✔ 已配置 CLAUDE.md" -ForegroundColor Green
 }
 
 Write-Host ""
