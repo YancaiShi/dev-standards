@@ -66,6 +66,37 @@ mklink /J %USERPROFILE%\.claude\standards %USERPROFILE%\dev-standards\standards
 ### 4. 完成
 重启 Claude Code 后，规范自动生效。
 
+## 验证安装
+
+### 检查链接
+```bash
+# macOS/Linux
+ls -la ~/.claude/standards
+
+# Windows PowerShell
+dir ~/.claude/standards
+```
+应显示指向 `~/dev-standards/standards` 的链接/目录
+
+### 检查规范文件
+```bash
+ls ~/.claude/standards/
+```
+应看到 6 个文件：`code-style.md` `commit-style.md` `engineering.md` `figma.md` `i18n.md` `review.md`
+
+### 检查 CLAUDE.md
+```bash
+grep "个人前端开发规范" ~/.claude/CLAUDE.md
+```
+应有输出
+
+### 重启 Claude Code 后测试
+在新会话中问 Claude：
+```
+你的输出格式是什么？
+```
+如果回答包含 `结论 → 原因 → 成本/Trade-off → 行动`，说明规范已生效。
+
 ## 文件变更
 
 | 操作 | 路径 | 说明 |
