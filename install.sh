@@ -7,24 +7,30 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 echo "📦 安装 dev-standards..."
 
-# 1. 链接 standards 目录
+# 1. 确保 ~/.claude 目录存在
+mkdir -p "$HOME/.claude"
+
+# 2. 链接 standards 目录
 if [ -L "$STANDARDS_DIR" ]; then
   echo "✔ standards 链接已存在，跳过"
 elif [ -d "$STANDARDS_DIR" ]; then
-  echo "⚠️  $STANDARDS_DIR 已存在（非链接），跳过"
+  echo "⚠️  $STANDARDS_DIR 已存在（非链接），备份为 .bak"
+  mv "$STANDARDS_DIR" "$STANDARDS_DIR.bak"
+  ln -s "$SCRIPT_DIR/standards" "$STANDARDS_DIR"
+  echo "✔ 已创建符号链接（原目录已备份）"
 else
   ln -s "$SCRIPT_DIR/standards" "$STANDARDS_DIR"
-  echo "✔ 已创建符号链接: $STANDARDS_DIR -> $SCRIPT_DIR/standards"
+  echo "✔ 已创建符号链接: $STANDARDS_DIR"
 fi
 
-# 2. 检查 CLAUDE.md 是否已引用
-if [ -f "$CLAUDE_MD" ] && grep -q "~/.claude/standards" "$CLAUDE_MD"; then
-  echo "✔ CLAUDE.md 已引用 standards，跳过"
+# 3. 自动配置 CLAUDE.md
+MARKER="# 个人前端开发规范"
+
+if [ -f "$CLAUDE_MD" ] && grep -q "$MARKER" "$CLAUDE_MD"; then
+  echo "✔ CLAUDE.md 已配置，跳过"
 else
-  echo ""
-  echo "⚠️  请在 $CLAUDE.md 中添加以下内容："
-  echo ""
-  cat << 'EOF'
+  cat >> "$CLAUDE_MD" << 'EOF'
+
 # 个人前端开发规范
 
 > 详细规范文档位于 `~/.claude/standards/`，需要时读取。
@@ -47,7 +53,8 @@ else
 ## Code Review
 详见 `~/.claude/standards/review.md`
 EOF
+  echo "✔ 已追加规范引用到 CLAUDE.md"
 fi
 
 echo ""
-echo "✅ 完成！重启 Claude Code 生效。"
+echo "✅ 安装完成！重启 Claude Code 即可生效。"
