@@ -21,12 +21,44 @@ if [ -d "$STANDARDS_DIR.bak" ]; then
   echo "✔ 已恢复备份"
 fi
 
-# 3. 从 CLAUDE.md 移除规范引用
-if [ -f "$CLAUDE_MD" ] && grep -q "# 个人前端开发规范" "$CLAUDE_MD"; then
-  # 移除从 "# 个人前端开发规范" 到下一个顶级标题之间的内容
-  sed -i.bak '/^# 个人前端开发规范$/,/^# [^#]/{ /^# [^#]/!d; /^# 个人前端开发规范$/d; }' "$CLAUDE_MD"
-  rm -f "$CLAUDE_MD.bak"
-  echo "✔ 已从 CLAUDE.md 移除规范引用"
+# 3. 从 CLAUDE.md 移除我们添加的内容（精确匹配）
+MARKER='# 个人前端开发规范'
+REFERENCE='
+> 详细规范文档位于 `~/.claude/standards/`，需要时读取。
+
+## 工程决策约束
+详见 `~/.claude/standards/engineering.md`
+
+## 代码风格
+详见 `~/.claude/standards/code-style.md`
+
+## Git 提交规范
+详见 `~/.claude/standards/commit-style.md`
+
+## 国际化（i18n）
+详见 `~/.claude/standards/i18n.md`
+
+## Figma 还原规则
+详见 `~/.claude/standards/figma.md`
+
+## Code Review
+详见 `~/.claude/standards/review.md`'
+
+if [ -f "$CLAUDE_MD" ]; then
+  # 只有当 CLAUDE.md 中的内容是我们添加的精确内容时才移除
+  if grep -q "$MARKER" "$CLAUDE_MD"; then
+    # 创建临时文件，跳过我们添加的块
+    awk -v marker="$MARKER" '
+      /^# 个人前端开发规范/ { skip=1; next }
+      skip && /^## / { skip=0 }
+      skip { next }
+      !skip { print }
+    ' "$CLAUDE_MD" > "$CLAUDE_MD.tmp"
+    mv "$CLAUDE_MD.tmp" "$CLAUDE_MD"
+    echo "✔ 已从 CLAUDE.md 移除规范引用"
+  else
+    echo "✔ CLAUDE.md 中未找到规范引用，跳过"
+  fi
 fi
 
 # 4. 询问是否删除仓库

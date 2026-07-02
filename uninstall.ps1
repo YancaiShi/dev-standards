@@ -23,14 +23,16 @@ if (Test-Path "$standardsDir.bak") {
     Write-Host "✔ 已恢复备份" -ForegroundColor Green
 }
 
-# 3. 从 CLAUDE.md 移除规范引用
+# 3. 从 CLAUDE.md 移除我们添加的内容（精确匹配）
 if ((Test-Path $claudeMd) -and (Select-String -Path $claudeMd -Pattern "# 个人前端开发规范" -Quiet)) {
     $content = Get-Content $claudeMd -Raw
-    # 移除从 "# 个人前端开发规范" 到下一个顶级标题之间的内容
-    $pattern = "(?ms)\r?\n# 个人前端开发规范.*?(?=\r?\n# [^#]|\z)"
+    # 只移除我们添加的精确块（从 "# 个人前端开发规范" 到下一个 "## " 之前）
+    $pattern = "(?ms)\r?\n# 个人前端开发规范\r?\n\r?\n> 详细规范文档.*?(?=\r?\n## |\z)"
     $newContent = [regex]::Replace($content, $pattern, "")
     Set-Content -Path $claudeMd -Value $newContent.TrimEnd()
     Write-Host "✔ 已从 CLAUDE.md 移除规范引用" -ForegroundColor Green
+} else {
+    Write-Host "✔ CLAUDE.md 中未找到规范引用，跳过" -ForegroundColor Green
 }
 
 # 4. 询问是否删除仓库
