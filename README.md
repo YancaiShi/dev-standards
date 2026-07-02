@@ -74,18 +74,23 @@ mklink /J %USERPROFILE%\.claude\standards %USERPROFILE%\dev-standards\standards
 | 新增 | `~/.claude/standards` | 链接 → `~/dev-standards/standards` |
 | 修改 | `~/.claude/CLAUDE.md` | 追加规范引用（如未配置） |
 
-## 卸载
+## 一键卸载
 
+**macOS / Linux:**
 ```bash
-# 删除链接
-rm ~/.claude/standards
-
-# 删除仓库（可选）
-rm -rf ~/dev-standards
-
-# 从 ~/.claude/CLAUDE.md 中移除规范引用
-# 删除 "# 个人前端开发规范" 到下一个 "#" 之间的内容
+bash <(curl -sSL https://raw.githubusercontent.com/YancaiShi/dev-standards/main/uninstall.sh)
 ```
+
+**Windows PowerShell:**
+```powershell
+irm https://raw.githubusercontent.com/YancaiShi/dev-standards/main/uninstall.ps1 | iex
+```
+
+卸载脚本会：
+1. 删除 `~/.claude/standards` 链接
+2. 恢复备份（如有）
+3. 从 `~/.claude/CLAUDE.md` 移除规范引用
+4. 询问是否删除仓库 `~/dev-standards`
 
 ## 包含规范
 
