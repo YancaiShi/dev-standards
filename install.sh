@@ -17,17 +17,28 @@ else
   echo "✔ 已克隆仓库到 $INSTALL_DIR"
 fi
 
-# 2. 创建符号链接
+# 2. 创建链接
 mkdir -p "$HOME/.claude"
+
+create_link() {
+  if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
+    # Windows: 使用 junction（不需要管理员权限）
+    cmd.exe /c "mklink /J \"$(cygpath -w "$STANDARDS_DIR")\" \"$(cygpath -w "$INSTALL_DIR/standards")\"" > /dev/null 2>&1
+  else
+    # macOS/Linux: 使用符号链接
+    ln -s "$INSTALL_DIR/standards" "$STANDARDS_DIR"
+  fi
+}
+
 if [ -L "$STANDARDS_DIR" ]; then
-  echo "✔ 符号链接已存在，跳过"
+  echo "✔ 链接已存在，跳过"
 elif [ -d "$STANDARDS_DIR" ]; then
   mv "$STANDARDS_DIR" "$STANDARDS_DIR.bak"
-  ln -s "$INSTALL_DIR/standards" "$STANDARDS_DIR"
-  echo "✔ 已创建符号链接（原目录已备份）"
+  create_link
+  echo "✔ 已创建链接（原目录已备份）"
 else
-  ln -s "$INSTALL_DIR/standards" "$STANDARDS_DIR"
-  echo "✔ 已创建符号链接"
+  create_link
+  echo "✔ 已创建链接"
 fi
 
 # 3. 配置 CLAUDE.md
