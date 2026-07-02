@@ -21,9 +21,57 @@ if [ -d "$STANDARDS_DIR.bak" ]; then
   echo "✔ 已恢复备份"
 fi
 
-# 3. 从 CLAUDE.md 移除我们添加的内容（精确匹配）
-MARKER='# 个人前端开发规范'
-REFERENCE='
+# 3. 从 CLAUDE.md 移除我们添加的精确内容
+# 我们添加的内容以 "# 个人前端开发规范" 开头，以 "详见 `~/.claude/standards/review.md`" 结尾
+if [ -f "$CLAUDE_MD" ] && grep -q "# 个人前端开发规范" "$CLAUDE_MD"; then
+  # 使用 Python 精确匹配并移除我们的块
+  python3 -c "
+import re
+import sys
+
+with open('$CLAUDE_MD', 'r', encoding='utf-8') as f:
+    content = f.read()
+
+# 我们添加的精确块
+our_block = '''
+
+# 个人前端开发规范
+
+> 详细规范文档位于 \`~/.claude/standards/\`，需要时读取。
+
+## 工程决策约束
+详见 \`~/.claude/standards/engineering.md\`
+
+## 代码风格
+详见 \`~/.claude/standards/code-style.md\`
+
+## Git 提交规范
+详见 \`~/.claude/standards/commit-style.md\`
+
+## 国际化（i18n）
+详见 \`~/.claude/standards/i18n.md\`
+
+## Figma 还原规则
+详见 \`~/.claude/standards/figma.md\`
+
+## Code Review
+详见 \`~/.claude/standards/review.md\`'''
+
+if our_block in content:
+    content = content.replace(our_block, '')
+    with open('$CLAUDE_MD', 'w', encoding='utf-8') as f:
+        f.write(content.rstrip() + '\n')
+    print('✔ 已从 CLAUDE.md 移除规范引用')
+else:
+    print('✔ CLAUDE.md 中未找到精确匹配的规范引用，跳过')
+" 2>/dev/null || {
+    # 如果 Python 不可用，使用 sed 精确匹配
+    # 创建临时文件存储我们要移除的内容
+    TEMP_FILE=$(mktemp)
+    cat > "$TEMP_FILE" << 'BLOCK'
+
+# 个人前端开发规范
+
 > 详细规范文档位于 `~/.claude/standards/`，需要时读取。
 
 ## 工程决策约束
@@ -42,23 +90,25 @@ REFERENCE='
 详见 `~/.claude/standards/figma.md`
 
 ## Code Review
-详见 `~/.claude/standards/review.md`'
-
-if [ -f "$CLAUDE_MD" ]; then
-  # 只有当 CLAUDE.md 中的内容是我们添加的精确内容时才移除
-  if grep -q "$MARKER" "$CLAUDE_MD"; then
-    # 创建临时文件，跳过我们添加的块
-    awk -v marker="$MARKER" '
-      /^# 个人前端开发规范/ { skip=1; next }
-      skip && /^## / { skip=0 }
-      skip { next }
-      !skip { print }
-    ' "$CLAUDE_MD" > "$CLAUDE_MD.tmp"
+详见 `~/.claude/standards/review.md`
+BLOCK
+    # 使用 awk 移除精确匹配的块
+    awk -v block="$(cat "$TEMP_FILE")" '
+    {
+        content = content $0 "\n"
+    }
+    END {
+        if (index(content, block) > 0) {
+            sub(block, "", content)
+            printf "%s", content
+        } else {
+            printf "%s", content
+        }
+    }' "$CLAUDE_MD" > "$CLAUDE_MD.tmp"
     mv "$CLAUDE_MD.tmp" "$CLAUDE_MD"
+    rm "$TEMP_FILE"
     echo "✔ 已从 CLAUDE.md 移除规范引用"
-  else
-    echo "✔ CLAUDE.md 中未找到规范引用，跳过"
-  fi
+  }
 fi
 
 # 4. 询问是否删除仓库

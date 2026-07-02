@@ -23,14 +23,44 @@ if (Test-Path "$standardsDir.bak") {
     Write-Host "✔ 已恢复备份" -ForegroundColor Green
 }
 
-# 3. 从 CLAUDE.md 移除我们添加的内容（精确匹配）
+# 3. 从 CLAUDE.md 移除我们添加的精确内容
 if ((Test-Path $claudeMd) -and (Select-String -Path $claudeMd -Pattern "# 个人前端开发规范" -Quiet)) {
     $content = Get-Content $claudeMd -Raw
-    # 只移除我们添加的精确块（从 "# 个人前端开发规范" 到下一个 "## " 之前）
-    $pattern = "(?ms)\r?\n# 个人前端开发规范\r?\n\r?\n> 详细规范文档.*?(?=\r?\n## |\z)"
-    $newContent = [regex]::Replace($content, $pattern, "")
-    Set-Content -Path $claudeMd -Value $newContent.TrimEnd()
-    Write-Host "✔ 已从 CLAUDE.md 移除规范引用" -ForegroundColor Green
+
+    # 我们添加的精确块
+    $ourBlock = @"
+
+# 个人前端开发规范
+
+> 详细规范文档位于 ``~/.claude/standards/``，需要时读取。
+
+## 工程决策约束
+详见 ``~/.claude/standards/engineering.md``
+
+## 代码风格
+详见 ``~/.claude/standards/code-style.md``
+
+## Git 提交规范
+详见 ``~/.claude/standards/commit-style.md``
+
+## 国际化（i18n）
+详见 ``~/.claude/standards/i18n.md``
+
+## Figma 还原规则
+详见 ``~/.claude/standards/figma.md``
+
+## Code Review
+详见 ``~/.claude/standards/review.md``
+
+"@
+
+    if ($content.Contains($ourBlock)) {
+        $newContent = $content.Replace($ourBlock, "")
+        Set-Content -Path $claudeMd -Value $newContent.TrimEnd()
+        Write-Host "✔ 已从 CLAUDE.md 移除规范引用" -ForegroundColor Green
+    } else {
+        Write-Host "✔ CLAUDE.md 中未找到精确匹配的规范引用，跳过" -ForegroundColor Green
+    }
 } else {
     Write-Host "✔ CLAUDE.md 中未找到规范引用，跳过" -ForegroundColor Green
 }
