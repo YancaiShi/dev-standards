@@ -17,7 +17,7 @@ if (Test-Path "$installDir\.git") {
     Write-Host "✔ 已克隆仓库到 $installDir" -ForegroundColor Green
 }
 
-# 2. 创建符号链接
+# 2. 创建 junction（不需要管理员权限）
 if (-not (Test-Path "$env:USERPROFILE\.claude")) {
     New-Item -ItemType Directory -Path "$env:USERPROFILE\.claude" | Out-Null
 }
@@ -25,15 +25,15 @@ if (-not (Test-Path "$env:USERPROFILE\.claude")) {
 if (Test-Path $standardsDir) {
     $item = Get-Item $standardsDir -Force
     if ($item.Attributes -band [IO.FileAttributes]::ReparsePoint) {
-        Write-Host "✔ 符号链接已存在，跳过" -ForegroundColor Green
+        Write-Host "✔ junction 已存在，跳过" -ForegroundColor Green
     } else {
         Rename-Item $standardsDir "$standardsDir.bak"
-        New-Item -ItemType SymbolicLink -Path $standardsDir -Target "$installDir\standards" | Out-Null
-        Write-Host "✔ 已创建符号链接（原目录已备份）" -ForegroundColor Green
+        cmd.exe /c "mklink /J `"$standardsDir`" `"$installDir\standards`"" | Out-Null
+        Write-Host "✔ 已创建 junction（原目录已备份）" -ForegroundColor Green
     }
 } else {
-    New-Item -ItemType SymbolicLink -Path $standardsDir -Target "$installDir\standards" | Out-Null
-    Write-Host "✔ 已创建符号链接" -ForegroundColor Green
+    cmd.exe /c "mklink /J `"$standardsDir`" `"$installDir\standards`"" | Out-Null
+    Write-Host "✔ 已创建 junction" -ForegroundColor Green
 }
 
 # 3. 配置 CLAUDE.md
