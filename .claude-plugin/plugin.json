@@ -1,8 +1,0 @@
-{
-  "name": "dev-standards",
-  "description": "前端开发规范：代码风格、提交规范、国际化、Figma 还原、UI 审查等",
-  "version": "1.0.0",
-  "author": {
-    "name": "shiyancai"
-  }
-}
