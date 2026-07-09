@@ -41,25 +41,17 @@ mklink /J %USERPROFILE%\.claude\standards %USERPROFILE%\dev-standards\standards
 ```markdown
 # 个人前端开发规范
 
-> 详细规范文档位于 `~/.claude/standards/`，需要时读取。
+前端开发规范，通过 Claude Code import(`@`)自动加载到上下文，会话启动即生效，无需手动读取。
 
-## 工程决策约束
-详见 `~/.claude/standards/engineering.md`
-
-## 代码风格
-详见 `~/.claude/standards/code-style.md`
-
-## Git 提交规范
-详见 `~/.claude/standards/commit-style.md`
-
-## 国际化（i18n）
-详见 `~/.claude/standards/i18n.md`
-
-## Figma 还原规则
-详见 `~/.claude/standards/figma.md`
-
-## Code Review
-详见 `~/.claude/standards/review.md`
+@standards/engineering.md
+@standards/code-style.md
+@standards/error-handling.md
+@standards/testing.md
+@standards/component-design.md
+@standards/commit-style.md
+@standards/review.md
+@standards/figma.md
+@standards/i18n.md
 ```
 - 如果 `CLAUDE.md` 已包含 `# 个人前端开发规范`，则跳过
 
@@ -82,7 +74,7 @@ dir ~/.claude/standards
 ```bash
 ls ~/.claude/standards/
 ```
-应看到 6 个文件：`code-style.md` `commit-style.md` `engineering.md` `figma.md` `i18n.md` `review.md`
+应看到 9 个文件：`code-style.md` `commit-style.md` `engineering.md` `error-handling.md` `figma.md` `i18n.md` `review.md` `testing.md` `component-design.md`
 
 ### 检查 CLAUDE.md
 ```bash
@@ -129,6 +121,9 @@ irm https://raw.githubusercontent.com/YancaiShi/dev-standards/main/uninstall.ps1
 |------|------|
 | `engineering.md` | 工程决策约束 |
 | `code-style.md` | 代码风格 |
+| `error-handling.md` | 错误处理 |
+| `testing.md` | 测试规范 |
+| `component-design.md` | 组件设计 |
 | `commit-style.md` | Git 提交规范 |
 | `i18n.md` | 国际化规范 |
 | `figma.md` | Figma 还原规则 |

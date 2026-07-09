@@ -37,25 +37,17 @@ our_block = '''
 
 # 个人前端开发规范
 
-> 详细规范文档位于 \`~/.claude/standards/\`，需要时读取。
+前端开发规范，通过 Claude Code import(\`@\`)自动加载到上下文，会话启动即生效，无需手动读取。
 
-## 工程决策约束
-详见 \`~/.claude/standards/engineering.md\`
-
-## 代码风格
-详见 \`~/.claude/standards/code-style.md\`
-
-## Git 提交规范
-详见 \`~/.claude/standards/commit-style.md\`
-
-## 国际化（i18n）
-详见 \`~/.claude/standards/i18n.md\`
-
-## Figma 还原规则
-详见 \`~/.claude/standards/figma.md\`
-
-## Code Review
-详见 \`~/.claude/standards/review.md\`'''
+@standards/engineering.md
+@standards/code-style.md
+@standards/error-handling.md
+@standards/testing.md
+@standards/component-design.md
+@standards/commit-style.md
+@standards/review.md
+@standards/figma.md
+@standards/i18n.md'''
 
 if our_block in content:
     content = content.replace(our_block, '')
@@ -72,25 +64,17 @@ else:
 
 # 个人前端开发规范
 
-> 详细规范文档位于 `~/.claude/standards/`，需要时读取。
+前端开发规范，通过 Claude Code import(`@`)自动加载到上下文，会话启动即生效，无需手动读取。
 
-## 工程决策约束
-详见 `~/.claude/standards/engineering.md`
-
-## 代码风格
-详见 `~/.claude/standards/code-style.md`
-
-## Git 提交规范
-详见 `~/.claude/standards/commit-style.md`
-
-## 国际化（i18n）
-详见 `~/.claude/standards/i18n.md`
-
-## Figma 还原规则
-详见 `~/.claude/standards/figma.md`
-
-## Code Review
-详见 `~/.claude/standards/review.md`
+@standards/engineering.md
+@standards/code-style.md
+@standards/error-handling.md
+@standards/testing.md
+@standards/component-design.md
+@standards/commit-style.md
+@standards/review.md
+@standards/figma.md
+@standards/i18n.md
 BLOCK
     # 使用 awk 移除精确匹配的块
     awk -v block="$(cat "$TEMP_FILE")" '
