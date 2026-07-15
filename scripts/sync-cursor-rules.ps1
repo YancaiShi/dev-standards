@@ -32,8 +32,17 @@ foreach ($rule in $Rules) {
         Write-Host "Skip missing: $($rule.file)" -ForegroundColor Yellow
         continue
     }
-    $body = [System.IO.File]::ReadAllText($src, $utf8NoBom).TrimEnd()
-    $mdc = "---`ndescription: $($rule.desc)`nalwaysApply: true`n---`n`n$body`n"
+    # Match existing working User Rules (global-*.mdc): UTF-8 no BOM + CRLF
+    $body = [System.IO.File]::ReadAllText($src, $utf8NoBom).TrimEnd() -replace "`r`n", "`n" -replace "`n", "`r`n"
+    $mdc = (
+        "---",
+        "description: $($rule.desc)",
+        "alwaysApply: true",
+        "---",
+        "",
+        $body,
+        ""
+    ) -join "`r`n"
     $dest = Join-Path $CursorRulesDir $rule.name
     [System.IO.File]::WriteAllText($dest, $mdc, $utf8NoBom)
 }
