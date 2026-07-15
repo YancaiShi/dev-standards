@@ -95,7 +95,16 @@ BLOCK
   }
 fi
 
-# 4. 询问是否删除仓库
+# 4. 删除 Cursor User Rules
+if [ -f "$HOME/dev-standards/scripts/remove-cursor-rules.sh" ]; then
+  chmod +x "$HOME/dev-standards/scripts/remove-cursor-rules.sh"
+  bash "$HOME/dev-standards/scripts/remove-cursor-rules.sh"
+else
+  rm -f "$HOME/.cursor/rules"/dev-standards-*.mdc 2>/dev/null || true
+  echo "✔ 已清理 Cursor Rules（dev-standards-*.mdc）"
+fi
+
+# 5. 询问是否删除仓库
 echo ""
 read -p "是否删除仓库 ~/dev-standards？(y/N) " -n 1 -r
 echo ""
@@ -107,4 +116,4 @@ else
 fi
 
 echo ""
-echo "✅ 卸载完成！重启 Claude Code 生效。"
+echo "✅ 卸载完成！重启 Claude Code / Cursor 生效。"

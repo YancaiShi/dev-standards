@@ -62,5 +62,9 @@ if ((Test-Path $claudeMd) -and (Select-String -Path $claudeMd -Pattern $marker -
     Write-Host "✔ 已配置 CLAUDE.md" -ForegroundColor Green
 }
 
+# 4. 同步 Cursor User Rules（alwaysApply，跨项目稳定注入）
+& "$installDir\scripts\sync-cursor-rules.ps1"
+
 Write-Host ""
-Write-Host "✅ 安装完成！重启 Claude Code 即可生效。" -ForegroundColor Green
+Write-Host "✅ 安装完成！重启 Claude Code / Cursor 即可生效。" -ForegroundColor Green
+Write-Host "   Cursor：Settings → Rules, Commands → User Rules 可见 dev-standards-*" -ForegroundColor DarkGray

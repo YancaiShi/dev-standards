@@ -1,0 +1,47 @@
+[
+  {
+    "file": "engineering.md",
+    "name": "dev-standards-engineering.mdc",
+    "desc": "工程决策约束：目标澄清、根因修复、调研与 ROI"
+  },
+  {
+    "file": "code-style.md",
+    "name": "dev-standards-code-style.mdc",
+    "desc": "代码风格：文件组织、复用、Vue/TS、命名"
+  },
+  {
+    "file": "error-handling.md",
+    "name": "dev-standards-error-handling.mdc",
+    "desc": "错误处理：分层职责与失败策略"
+  },
+  {
+    "file": "testing.md",
+    "name": "dev-standards-testing.mdc",
+    "desc": "测试规范：范围、写法与边界"
+  },
+  {
+    "file": "component-design.md",
+    "name": "dev-standards-component-design.mdc",
+    "desc": "组件设计：Props、透传、组合优于配置"
+  },
+  {
+    "file": "commit-style.md",
+    "name": "dev-standards-commit-style.mdc",
+    "desc": "Git 提交信息格式与内容要求"
+  },
+  {
+    "file": "review.md",
+    "name": "dev-standards-review.mdc",
+    "desc": "Code Review 审查维度与偏好"
+  },
+  {
+    "file": "figma.md",
+    "name": "dev-standards-figma.mdc",
+    "desc": "Figma 还原规则与触发条件"
+  },
+  {
+    "file": "i18n.md",
+    "name": "dev-standards-i18n.mdc",
+    "desc": "国际化：key 命名、文案与禁止事项"
+  }
+]

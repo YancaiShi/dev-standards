@@ -65,5 +65,10 @@ EOF
   echo "✔ 已配置 CLAUDE.md"
 fi
 
+# 4. 同步 Cursor User Rules（alwaysApply，跨项目稳定注入）
+chmod +x "$INSTALL_DIR/scripts/sync-cursor-rules.sh"
+bash "$INSTALL_DIR/scripts/sync-cursor-rules.sh"
+
 echo ""
-echo "✅ 安装完成！重启 Claude Code 即可生效。"
+echo "✅ 安装完成！重启 Claude Code / Cursor 即可生效。"
+echo "   Cursor：Settings → Rules, Commands → User Rules 可见 dev-standards-*"

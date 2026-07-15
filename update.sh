@@ -18,12 +18,16 @@ git -C "$INSTALL_DIR" fetch -q origin
 git -C "$INSTALL_DIR" reset --hard -q origin/main
 echo "✔ 已更新到最新版本"
 
-# 3. 确认链接
+# 3. 确认 Claude 链接
 if [ ! -e "$STANDARDS_DIR" ]; then
-    echo "⚠ 检测到 $STANDARDS_DIR 不存在，建议重新执行安装脚本"
+  echo "⚠ 检测到 $STANDARDS_DIR 不存在，建议重新执行安装脚本"
 else
-    echo "✔ 链接正常，规范已同步到 ~/.claude/standards"
+  echo "✔ 链接正常，规范已同步到 ~/.claude/standards"
 fi
 
+# 4. 重新同步 Cursor Rules（内容以仓库 standards/ 为准）
+chmod +x "$INSTALL_DIR/scripts/sync-cursor-rules.sh"
+bash "$INSTALL_DIR/scripts/sync-cursor-rules.sh"
+
 echo ""
-echo "✅ 更新完成！重启 Claude Code 即可生效。"
+echo "✅ 更新完成！重启 Claude Code / Cursor 即可生效。"

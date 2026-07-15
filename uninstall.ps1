@@ -56,7 +56,17 @@ if ((Test-Path $claudeMd) -and (Select-String -Path $claudeMd -Pattern "# 个人
     Write-Host "✔ CLAUDE.md 中未找到规范引用，跳过" -ForegroundColor Green
 }
 
-# 4. 询问是否删除仓库
+# 4. 删除 Cursor User Rules
+$removeCursor = Join-Path $env:USERPROFILE "dev-standards\scripts\remove-cursor-rules.ps1"
+if (Test-Path $removeCursor) {
+    & $removeCursor
+} else {
+    Get-ChildItem -Path (Join-Path $env:USERPROFILE ".cursor\rules") -Filter "dev-standards-*.mdc" -ErrorAction SilentlyContinue |
+        Remove-Item -Force -ErrorAction SilentlyContinue
+    Write-Host "✔ 已清理 Cursor Rules（dev-standards-*.mdc）" -ForegroundColor Green
+}
+
+# 5. 询问是否删除仓库
 Write-Host ""
 $reply = Read-Host "是否删除仓库 ~/dev-standards？(y/N)"
 if ($reply -eq "y" -or $reply -eq "Y") {
@@ -67,4 +77,4 @@ if ($reply -eq "y" -or $reply -eq "Y") {
 }
 
 Write-Host ""
-Write-Host "✅ 卸载完成！重启 Claude Code 生效。" -ForegroundColor Green
+Write-Host "✅ 卸载完成！重启 Claude Code / Cursor 生效。" -ForegroundColor Green
