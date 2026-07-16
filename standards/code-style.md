@@ -11,10 +11,57 @@
 ## 复用原则
 
 - 模块之间天然有共性，能复用的必须复用，禁止各写各的副本
-- 遵守单一数据源（Single Source of Truth）：同一份常量、类型、配置、逻辑只在唯一一处定义，其他地方引用而非复制
 - 共性 UI → 公共组件；共性逻辑 → composable / utility；共性样式 → 变量或公共类；共性配置 → 集中导出
 - **主动扫描**：开发过程中发现相似结构、重复逻辑、雷同 UI 片段，必须提取为模块/组件，不能因为"能跑"就到处复制
 - 提取时机：同一模式出现第 2 次即可提取，不等到第 3 次；已有模块能覆盖的，直接复用，禁止重写一份
+
+## 单一数据源（Single Source of Truth）
+
+同一份数据（常量、类型、配置、逻辑）只在唯一一处定义，其他地方引用而非复制。散落各处的副本是 bug 温床——改一处漏一处。
+
+### 范围
+
+| 数据类型 | 定义位置 | 使用方式 |
+|---------|---------|---------|
+| 常量 / 枚举 | `constants/` 或模块内 `constants.ts` | `import { ORDER_STATUS } from '@/constants/order'` |
+| 类型 / 接口 | `types/` 或模块内 `types.ts` | `import type { User } from '@/types/user'` |
+| 配置 | 集中配置文件 | `import { config } from '@/config'` |
+| 业务逻辑 | composable / utility | `import { useAuth } from '@/composables/useAuth'` |
+| 样式变量 | 主题文件 / CSS 变量 | `var(--color-primary)` |
+
+### 示例
+
+```ts
+// ❌ 多处硬编码同一份数据
+// a.ts
+const STATUS_MAP = { 0: '待处理', 1: '进行中', 2: '已完成' }
+// b.ts
+const STATUS_MAP = { 0: '待处理', 1: '进行中', 2: '已完成' } // 复制粘贴
+
+// ✅ 定义一次，多处引用
+// constants/order.ts
+export const ORDER_STATUS = { 0: '待处理', 1: '进行中', 2: '已完成' } as const
+// a.ts / b.ts
+import { ORDER_STATUS } from '@/constants/order'
+
+// ❌ 类型重复定义
+interface UserInfo { id: number; name: string }
+// 另一处又写了一遍
+
+// ✅ 类型单点维护
+// types/user.ts
+export interface User { id: number; name: string }
+// 使用处
+import type { User } from '@/types/user'
+
+// ❌ 魔法数字散落
+if (status === 2) { ... }
+if (type === 1) { ... }
+
+// ✅ 枚举集中管理
+import { OrderStatus, OrderType } from '@/constants/order'
+if (status === OrderStatus.Completed) { ... }
+```
 
 ## Vue 规范
 
